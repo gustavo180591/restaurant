@@ -19,7 +19,7 @@ export class OrdersController {
     },
   })
   async create(
-    @Request() req,
+    @Request() req: any,
     @Body() createOrderDto: CreateOrderDto,
   ) {
     // lógica para crear pedido…

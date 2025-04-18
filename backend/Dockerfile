@@ -2,11 +2,11 @@
 FROM node:18-alpine AS builder
 WORKDIR /app
 
-# Instala todas las deps (prod + dev)
+# Copia las dependencias (prod + dev) e instala
 COPY package*.json ./
 RUN npm install
 
-# Copia el código y construye
+# Copia el resto del código y construye
 COPY . .
 RUN npm run build
 
@@ -14,15 +14,14 @@ RUN npm run build
 FROM node:18-alpine AS production
 WORKDIR /app
 
-# Sólo deps de producción
+# Copia las dependencias de producción
 COPY package*.json ./
 RUN npm ci --omit=dev
 
-# Copia el resultado compilado y artefactos necesarios
+# Copia la compilación desde el builder
 COPY --from=builder /app/dist ./dist
-# Si usas Prisma, copia también tus esquemas/migrations
-COPY --from=builder /app/prisma ./prisma
 
-# Expón y arranca
+# Expón el puerto y arranca la aplicación
 EXPOSE 3000
 CMD ["node", "dist/main.js"]
+
