@@ -1,4 +1,3 @@
-# /database/Dockerfile
 FROM postgres:15
 ENV POSTGRES_DB=restaurant
 ENV POSTGRES_USER=admin

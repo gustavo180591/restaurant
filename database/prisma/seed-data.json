@@ -1,0 +1,23 @@
+{
+    "ingredients": [
+      { "name": "Tomate", "stock": 100 },
+      { "name": "Queso", "stock": 50 }
+    ],
+    "menuItems": [
+      {
+        "name": "Pizza Margarita",
+        "description": "Tomate, queso mozzarella y albahaca fresca",
+        "price": 8.99,
+        "category": "PLATO_PRINCIPAL",
+        "ingredientNames": ["Tomate", "Queso"]
+      },
+      {
+        "name": "Ensalada César",
+        "description": "Lechuga, pollo, queso parmesano y aderezo César",
+        "price": 6.5,
+        "category": "ENTRADA",
+        "ingredientNames": []
+      }
+    ],
+    "tables": [1,2,3,4,5,6,7,8,9,10]
+  }

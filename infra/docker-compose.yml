@@ -1,17 +1,37 @@
-# infra/docker-compose.yml
 version: '3.8'
 services:
   db:
-    build: ./database
-    ports: ['5432:5432']
-    volumes: ['db_data:/var/lib/postgresql/data']
+    image: postgres:15
+    environment:
+      POSTGRES_DB: restaurant
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: securepass
+    ports:
+      - '5432:5432'
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
   backend:
-    build: ./backend
-    env_file: ./backend/.env
-    depends_on: ['db']
-    ports: ['4000:4000']
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    env_file:
+      - ../backend/.env
+    depends_on:
+      - db
+    ports:
+      - '4000:4000'
+
   frontend:
-    build: ./frontend
-    ports: ['3000:3000']
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_API_URL=http://backend:4000
+
 volumes:
   db_data:
