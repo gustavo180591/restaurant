@@ -1,19 +1,28 @@
-# Usa una imagen ligera de Node.js
-FROM node:18-alpine
-
-# Directorio de trabajo
+# ── Stage 1: builder ────────────────────────────────────────────────────────────
+FROM node:18-alpine AS builder
 WORKDIR /app
 
-# Copia archivos de dependencias e instala
+# Instala todas las deps (prod + dev)
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm install
 
-# Copia el resto del código y construye
+# Copia el código y construye
 COPY . .
 RUN npm run build
 
-# Expone el puerto de la API
-EXPOSE 4000
+# ── Stage 2: producción ────────────────────────────────────────────────────────
+FROM node:18-alpine AS production
+WORKDIR /app
 
-# Comando por defecto
+# Sólo deps de producción
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+# Copia el resultado compilado y artefactos necesarios
+COPY --from=builder /app/dist ./dist
+# Si usas Prisma, copia también tus esquemas/migrations
+COPY --from=builder /app/prisma ./prisma
+
+# Expón y arranca
+EXPOSE 3000
 CMD ["node", "dist/main.js"]
