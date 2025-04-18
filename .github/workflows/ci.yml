@@ -1,0 +1,26 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+  e2e:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    services:
+      db: postgres:15
+    steps:
+      - uses: actions/checkout@v3
+      - uses: cypress-io/github-action@v5
+        with:
+          start: npm run dev
+          wait-on: http://localhost:3000
+          browser: chrome
