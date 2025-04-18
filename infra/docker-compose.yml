@@ -21,6 +21,10 @@ services:
       - db
     ports:
       - '4000:4000'
+    volumes:
+      - ../backend:/app          # Monta todo el código para desarrollo en caliente
+      - /app/node_modules       # Mantiene los node_modules del contenedor
+    command: npm run dev        # Arranca en modo desarrollo (nodemon/ts-node)
 
   frontend:
     build:
